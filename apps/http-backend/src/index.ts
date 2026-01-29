@@ -1,5 +1,5 @@
 import express from "express";
-import cors from "cors"
+import cors from "cors";
 import { config } from "dotenv";
 import { PORT } from "./config";
 import { connectDb } from "./config/db";
@@ -8,16 +8,16 @@ config({ path: "./.env" });
 const app = express();
 
 // Middlewares
-app.use(cors)
+app.use(cors);
 app.use(express.json());
 
-// Routes 
+// Routes
 app.use("/users", userRouter);
 
 async function main() {
-    await connectDb();
-    app.listen(PORT, () => {
-        console.log(`SERVER IS RUNNING AT PORT ${PORT}`)
-    });
+  await connectDb();
+  app.listen(PORT, () => {
+    console.log(`SERVER IS RUNNING AT PORT ${PORT}`);
+  });
 }
 main();
