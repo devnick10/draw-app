@@ -67,8 +67,9 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
 
   const hashedPassword = await hash(data.password, 10);
   const newUser = await prisma.user.create({
+    // @ts-ignore
     data: {
-      username: data?.username,
+      username: data.username,
       email: data.email,
       password: hashedPassword,
     },
@@ -99,8 +100,9 @@ userRouter.post(
 
     const newRoom = await prisma.room.create({
       data: {
-        name: data.name,
-        userId,
+        slug: data.name,
+        // @ts-ignore
+        adminId: userId,
       },
     });
     if (!newRoom) {
