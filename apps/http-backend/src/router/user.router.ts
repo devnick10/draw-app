@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
-import { authMidlleware } from "../middleware";
+import { authMidlleware } from "../middleware.js";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config";
 import { RoomSchema, SigninSchema, SignupSchema } from "@repo/common/schema";
 import { compare, hash } from "bcrypt";
-import { prisma } from "@repo/db/client";
+import { prisma } from "@repo/db";
 
 const userRouter: Router = Router();
 
@@ -67,7 +67,6 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
 
   const hashedPassword = await hash(data.password, 10);
   const newUser = await prisma.user.create({
-    // @ts-ignore
     data: {
       username: data.username,
       email: data.email,
@@ -84,39 +83,5 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
   });
 });
 
-userRouter.post(
-  "/room",
-  authMidlleware,
-  async (req: Request, res: Response) => {
-    // @ts-ignore
-    const userId = req.userId;
-    const { data, success } = RoomSchema.safeParse(req.body);
-    if (!success) {
-      res.status(400).json({
-        message: "Invalid inputs",
-      });
-      return;
-    }
-
-    const newRoom = await prisma.room.create({
-      data: {
-        slug: data.name,
-        // @ts-ignore
-        adminId: userId,
-      },
-    });
-    if (!newRoom) {
-      res.status(500).json({
-        message: "Internal server error!",
-      });
-      return;
-    }
-
-    res.status(201).json({
-      message: "Room created.",
-      roomId: newRoom.id,
-    });
-  },
-);
 
 export { userRouter };

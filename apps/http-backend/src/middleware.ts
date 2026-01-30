@@ -7,9 +7,9 @@ export const authMidlleware = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.cookies.token || "";
-  console.log(token);
   try {
+    const authHeader = req.headers.authorization || "";
+    const token = authHeader.split(" ")[1] as string;
     const decode = jwt.verify(token, JWT_SECRET) as JwtPayload;
     if (decode.userId) {
       // @ts-ignore
@@ -21,7 +21,6 @@ export const authMidlleware = async (
       });
     }
   } catch (error) {
-    console.error(error);
     next(error);
   }
 };

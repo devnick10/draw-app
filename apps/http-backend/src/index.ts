@@ -1,23 +1,41 @@
+import { config } from "dotenv";
+config();
 import express from "express";
 import cors from "cors";
-import { config } from "dotenv";
-import { PORT } from "./config";
-import { connectDb } from "./config/db";
-import { userRouter } from "./router/user.router";
-config({ path: "./.env" });
+import { PORT } from "./config/index.js";
+import { connectDb } from "./config/db.js";
+import { userRouter } from "./router/user.router.js";
+import { healthCheckRouter } from "./router/health-check.route.js";
+import morgan from "morgan"
+import { errorHandler } from "./errorHandler.js";
 const app = express();
 
-// Middlewares
-app.use(cors);
-app.use(express.json());
+/**
+ * Improments 
+ * 1. Global catch for controller 
+ * 2. make controller dir and seprate it from routes 
+ * 3. config management 
+ */
 
+
+// Middlewares
+app.use(cors({
+  origin: "*"
+}));
+
+app.use(express.json());
+app.use(morgan("dev"))
 // Routes
 app.use("/users", userRouter);
 
-async function main() {
-  await connectDb();
+// health-check
+app.use("/health-check", healthCheckRouter)
+
+// Global Error Handler 
+app.use(errorHandler)
+
+connectDb().then(() => {
   app.listen(PORT, () => {
     console.log(`SERVER IS RUNNING AT PORT ${PORT}`);
   });
-}
-main();
+})
