@@ -1,10 +1,9 @@
-import { Request, Response, Router } from "express";
-import { authMidlleware } from "../middleware.js";
-import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "@repo/backend-common/config";
-import { RoomSchema, SigninSchema, SignupSchema } from "@repo/common/schema";
-import { compare, hash } from "bcrypt";
+import { SigninSchema, SignupSchema } from "@repo/common/schema";
 import { prisma } from "@repo/db";
+import { compare, hash } from "bcrypt";
+import { Request, Response, Router } from "express";
+import jwt from "jsonwebtoken";
 
 const userRouter: Router = Router();
 
@@ -82,6 +81,5 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     token,
   });
 });
-
 
 export { userRouter };

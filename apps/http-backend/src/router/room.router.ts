@@ -7,76 +7,105 @@ import apiError from "http-errors";
 const roomRouter: Router = Router();
 
 roomRouter.post(
-    "/room",
-    authMidlleware,
-    async (req: Request, res: Response) => {
-        // @ts-ignore
-        const userId = req.userId;
-        const { data, success } = RoomSchema.safeParse(req.body);
-        if (!success) {
-            res.status(400).json({
-                message: "Invalid inputs",
-            });
-            return;
-        }
+  "/create",
+  authMidlleware,
+  async (req: Request, res: Response) => {
+    // @ts-ignore
+    const userId = req.userId;
+    const { data, success } = RoomSchema.safeParse(req.body);
+    if (!success) {
+      res.status(400).json({
+        message: "Invalid inputs",
+      });
+      return;
+    }
 
-        const newRoom = await prisma.room.create({
-            data: {
-                slug: data.name,
-                adminId: userId,
-            },
-        });
-        if (!newRoom) {
-            res.status(500).json({
-                message: "Internal server error!",
-            });
-            return;
-        }
+    const newRoom = await prisma.room.create({
+      data: {
+        slug: data.name,
+        adminId: userId,
+      },
+    });
+    if (!newRoom) {
+      res.status(500).json({
+        message: "Internal server error!",
+      });
+      return;
+    }
 
-        res.status(201).json({
-            message: "Room created.",
-            roomId: newRoom.id,
-        });
-    },
+    res.status(201).json({
+      message: "Room created.",
+      roomId: newRoom.id,
+    });
+  },
 );
 
 roomRouter.get(
-    "/chats",
-    authMidlleware,
-    async (req: Request, res: Response, next: NextFunction) => {
-        // @ts-ignore
-        const userId = req.userId;
-        const roomId = req.query.room as string;
+  "/chats/:roomId",
+  authMidlleware,
+  async (req: Request, res: Response, next: NextFunction) => {
+    //TODO : input validation
+    // @ts-ignore
+    const userId = req.userId;
+    const roomId = req.params.roomId as string;
 
-        if (!roomId) {
-            return next(apiError(409, "room field is required as query params"))
-        }
+    if (!roomId) {
+      return next(apiError(409, "room field is required in params"));
+    }
 
-        const room = await prisma.room.findUnique({
-            where: {
-                id: roomId,
-                adminId: userId,
-            },
-            include: {
-                chats: {
-                    orderBy: {
-                        //@ts-ignore
-                        createdAt: "desc",
-                    },
-                    take: 50
-                }
-            }
-        });
+    const messages = await prisma.chat.findMany({
+      where: {
+        roomId: roomId,
+      },
+      select: {
+        id: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+        message: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+      take: 500,
+    });
 
-        if (!room) {
-            return next(apiError(404, "Room not found."))
-        }
+    res.status(200).json({
+      message: "Chat fetched.",
+      chats: messages.map((chat) => ({
+        id: chat.id,
+        username: chat.user.username,
+        message: chat.message,
+      })),
+    });
+  },
+);
 
-        const chats = room.chats;
-        res.status(201).json({
-            message: "Chat fetched.",
-            chats
-        });
-    },
+roomRouter.get(
+  "/:slug",
+  authMidlleware,
+  async (req: Request, res: Response, next: NextFunction) => {
+    //TODO : input validation
+    // @ts-ignore
+    const userId = req.userId;
+    const slug = req.params.slug as string;
+
+    if (!slug) {
+      return next(apiError(409, "Slug is required"));
+    }
+
+    const room = await prisma.room.findFirst({
+      where: {
+        slug,
+      },
+    });
+
+    res.status(201).json({
+      message: "Room fetched",
+      room,
+    });
+  },
 );
 export { roomRouter };
