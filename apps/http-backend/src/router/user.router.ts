@@ -4,6 +4,7 @@ import { prisma } from "@repo/db";
 import { compare, hash } from "bcrypt";
 import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
+import { authMidlleware } from "../middleware";
 
 const userRouter: Router = Router();
 
@@ -81,5 +82,20 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
     token,
   });
 });
+
+userRouter.get("/me", authMidlleware, async (req: Request, res: Response) => {
+  // @ts-ignore
+  const userId = req.userId;
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId
+    }
+  })
+  res.status(200).json({
+    username: user?.username,
+    emal: user?.email
+  })
+})
+
 
 export { userRouter };
