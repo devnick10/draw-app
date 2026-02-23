@@ -5,6 +5,7 @@ import { compare, hash } from "bcrypt";
 import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import { authMidlleware } from "../middleware";
+import { NODE_ENV } from "../config";
 
 const userRouter: Router = Router();
 
@@ -38,6 +39,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
   }
 
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1hr" });
+
   res.status(200).json({
     message: "Signin sucessfully",
     token,
@@ -77,6 +79,7 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
   const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
     expiresIn: "1hr",
   });
+
   res.status(201).json({
     message: "Signup sucessfully",
     token,
@@ -88,14 +91,13 @@ userRouter.get("/me", authMidlleware, async (req: Request, res: Response) => {
   const userId = req.userId;
   const user = await prisma.user.findFirst({
     where: {
-      id: userId
-    }
-  })
+      id: userId,
+    },
+  });
   res.status(200).json({
     username: user?.username,
-    emal: user?.email
-  })
-})
-
+    emal: user?.email,
+  });
+});
 
 export { userRouter };

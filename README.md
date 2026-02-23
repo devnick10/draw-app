@@ -8,12 +8,12 @@ Built with a modern full‑stack setup: **Next.js frontend**, **HTTP + WebSocket
 
 ## ✨ Features
 
-* 🧑‍🤝‍🧑 **Realtime collaboration** using WebSockets
-* ✏️ Draw **Rectangle**, **Circle**, and **Pencil** shapes
-* 🔄 Instant sync across all connected users
-* 💾 Persistent canvas data stored in **PostgreSQL**
-* 🎨 Clean and responsive UI with **Tailwind CSS**
-* 🧩 Monorepo architecture for shared code and scalability
+- 🧑‍🤝‍🧑 **Realtime collaboration** using WebSockets
+- ✏️ Draw **Rectangle**, **Circle**, and **Pencil** shapes
+- 🔄 Instant sync across all connected users
+- 💾 Persistent canvas data stored in **PostgreSQL**
+- 🎨 Clean and responsive UI with **Tailwind CSS**
+- 🧩 Monorepo architecture for shared code and scalability
 
 ---
 
@@ -21,28 +21,27 @@ Built with a modern full‑stack setup: **Next.js frontend**, **HTTP + WebSocket
 
 ### Frontend
 
-* **Next.js (App Router)**
-* **React**
-* **Tailwind CSS**
-* **Canvas API**
+- **Next.js (App Router)**
+- **React**
+- **Tailwind CSS**
+- **Canvas API**
 
 ### Backend
 
-* **Node.js**
-* **HTTP API** (for auth / rooms / initial data)
-* **WebSocket Server** (for realtime drawing updates)
-* **Prisma ORM**
+- **Node.js**
+- **HTTP API** (for auth / rooms / initial data)
+- **WebSocket Server** (for realtime drawing updates)
+- **Prisma ORM**
 
 ### Database
 
-* **PostgreSQL**
+- **PostgreSQL**
 
 ### Tooling
 
-* **pnpm workspaces**
-* **TypeScript**
-* **Turborepo / TS project references**
-
+- **pnpm workspaces**
+- **TypeScript**
+- **Turborepo / TS project references**
 
 <!-- ## 🧠 Data Model (Shapes)
 
@@ -67,16 +66,15 @@ Example shape structure:
 }
 ``` -->
 
-
 ## 🔌 Realtime Architecture
 
 1. User joins a room
 2. Existing shapes are fetched via HTTP
 3. WebSocket connection is established
 4. Any new drawing action:
+   - Broadcasted to all clients in the room
+   - Persisted in PostgreSQL
 
-   * Broadcasted to all clients in the room
-   * Persisted in PostgreSQL
 5. Other users receive and render updates instantly
 
 ---
@@ -113,18 +111,19 @@ pnpm build
 pnpm dev
 ```
 
-* Frontend: `http://localhost:3000`
-* http-backend: `http://localhost:3001`
-* ws-backend: `http://localhost:8080`
+- Frontend: `http://localhost:3000`
+- http-backend: `http://localhost:3001`
+- ws-backend: `http://localhost:8080`
 
 ---
 
 ## 🧪 Future Improvements
 
-* 🔐 Authentication & user cursors
-* 📄 Multiple pages per canvas
-* ⏪ Undo / redo support
-* 🧠 Shape selection & resizing
+- 🔐 Authentication & user cursors
+- 📄 Multiple pages per canvas
+- ⏪ Undo / redo support
+- 🧠 Shape selection & resizing
+
 ---
 
 ## 🙌 Inspiration

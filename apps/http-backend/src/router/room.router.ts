@@ -84,27 +84,21 @@ roomRouter.get(
 );
 
 roomRouter.get(
-  "/:slug",
+  "/",
   authMidlleware,
   async (req: Request, res: Response, next: NextFunction) => {
-    //TODO : input validation
     // @ts-ignore
-    const userId = req.userId;
-    const slug = req.params.slug as string;
+    const adminId = req.userId;
 
-    if (!slug) {
-      return next(apiError(409, "Slug is required"));
-    }
-
-    const room = await prisma.room.findFirst({
+    const rooms = await prisma.room.findMany({
       where: {
-        slug,
+        adminId,
       },
     });
 
-    res.status(201).json({
+    res.status(200).json({
       message: "Room fetched",
-      room,
+      rooms,
     });
   },
 );

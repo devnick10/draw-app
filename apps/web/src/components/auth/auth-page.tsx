@@ -24,25 +24,21 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
     password: "",
     username: "",
   });
-
   const router = useRouter();
   const handleChange =
-    (key: keyof AuthFormState) =>
-      (e: ChangeEvent<HTMLInputElement>) => {
-        setForm((prev) => ({ ...prev, [key]: e.target.value }));
-      };
+    (key: keyof AuthFormState) => (e: ChangeEvent<HTMLInputElement>) => {
+      setForm((prev) => ({ ...prev, [key]: e.target.value }));
+    };
 
-  // RAW implementation
   const submitMap = {
     signin: async () => {
       try {
-        const res = await axios.post(`${HTTP_SERVER}/users/signin`, form)
+        const res = await axios.post(`${HTTP_SERVER}/users/signin`, form);
         if (res.status !== 200) {
           throw new Error("Signin failed!");
         }
         localStorage.setItem("token", res.data.token);
-        //TEMP
-        router.push("/canvas/123")
+        router.push("/dashboard");
       } catch (error) {
         console.error(error);
         alert("Signin failed!");
@@ -50,13 +46,12 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
     },
     signup: async () => {
       try {
-        const res = await axios.post(`${HTTP_SERVER}/users/signup`, form)
+        const res = await axios.post(`${HTTP_SERVER}/users/signup`, form);
         if (res.status !== 201) {
           throw new Error("Signup failed!");
         }
         localStorage.setItem("token", res.data.token);
-        //TEMP
-        router.push("/canvas/123")
+        router.push("/dashboard");
       } catch (error) {
         console.error(error);
         alert("Signup failed!");
@@ -105,7 +100,10 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
           />
         </div>
 
-        <Link className="text-neutral-300" href={mode === "signin" ? "/signup" : "/signin"}>
+        <Link
+          className="text-neutral-300"
+          href={mode === "signin" ? "/signup" : "/signin"}
+        >
           {mode === "signin"
             ? "If you don't have an account signup"
             : "If you already have an account signin"}

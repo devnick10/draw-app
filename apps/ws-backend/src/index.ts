@@ -46,7 +46,7 @@ wss.on("connection", (ws, req) => {
         room
           .get(roomId)
           ?.filter((user) => user.socket !== ws && user.userId === userId) ||
-        [],
+          [],
       );
       return;
     }
