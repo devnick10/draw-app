@@ -60,20 +60,27 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
   };
 
   return (
-    <div className="h-screen w-full flex justify-center items-center">
-      <div className="rounded-md py-2 px-4 bg-neutral-200 dark:bg-neutral-800 flex gap-2 flex-col">
-        <div className="mb-5">
-          <h1 className="text-center text-2xl my-2">
-            {mode === "signin" ? "Signin" : "Signup"}
+    <div className="h-screen w-full flex justify-center items-center bg-gray-50 dark:bg-black font-inter">
+      <div className="w-[360px] rounded-2xl p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-lg flex gap-4 flex-col">
+
+        <div className="mb-2 text-center">
+          <h1 className="text-2xl font-semibold text-black dark:text-white">
+            {mode === "signin" ? "Sign in" : "Create account"}
           </h1>
-          <p className="text-neutral-300">{`S${mode.slice(1)} to your account.`}</p>
+          <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
+            {mode === "signin"
+              ? "Sign in to your account."
+              : "Create a new account."}
+          </p>
         </div>
 
         {mode === "signup" && (
           <div className="flex flex-col gap-2">
-            <label className="text-foreground font-thin">Username</label>
+            <label className="text-sm text-gray-700 dark:text-zinc-300">
+              Username
+            </label>
             <input
-              className={inputClassName}
+              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-black dark:text-white outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition"
               value={form.username ?? ""}
               onChange={handleChange("username")}
             />
@@ -81,36 +88,40 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
         )}
 
         <div className="flex flex-col gap-2">
-          <label className="text-foreground font-thin">Email</label>
+          <label className="text-sm text-gray-700 dark:text-zinc-300">
+            Email
+          </label>
           <input
             type="email"
-            className={inputClassName}
+            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-black dark:text-white outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition"
             value={form.email}
             onChange={handleChange("email")}
           />
         </div>
 
-        <div className="flex flex-col gap-2 mb-4">
-          <label className="text-foreground font-thin">Password</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm text-gray-700 dark:text-zinc-300">
+            Password
+          </label>
           <input
             type="password"
-            className={inputClassName}
+            className="px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-black dark:text-white outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition"
             value={form.password}
             onChange={handleChange("password")}
           />
         </div>
 
         <Link
-          className="text-neutral-300"
+          className="text-sm text-gray-600 dark:text-zinc-400 hover:underline text-center"
           href={mode === "signin" ? "/signup" : "/signin"}
         >
           {mode === "signin"
-            ? "If you don't have an account signup"
-            : "If you already have an account signin"}
+            ? "Don't have an account? Sign up"
+            : "Already have an account? Sign in"}
         </Link>
 
         <Button variant="primary" onClick={submitMap[mode]}>
-          {mode === "signin" ? "Signin" : "Signup"}
+          {mode === "signin" ? "Sign in" : "Sign up"}
         </Button>
       </div>
     </div>
