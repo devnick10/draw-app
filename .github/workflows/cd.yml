@@ -16,10 +16,11 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd draw-app
+            export NVM_DIR="/root/.nvm"
+            source $NVM_DIR/nvm.sh
+            nvm use 24
+            cd drawapp
             git pull origin production
-            export NVM_DIR="$HOME/.nvm" 
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             pnpm install
             pnpm turbo run build
             pm2 restart htt-server
