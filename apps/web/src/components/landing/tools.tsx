@@ -1,8 +1,12 @@
-import { ArrowRight, Grid3x3, Layers, Pencil, Shapes, Zap } from "lucide-react";
+import { IconCircle, IconLine, IconRectangle } from "@tabler/icons-react";
+import { ArrowRight, BoxSelect, Eraser, Pencil, Text } from "lucide-react";
 
 export const Tools: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-24 border-t border-gray-200">
+    <section
+      id="tools"
+      className="max-w-7xl mx-auto px-6 py-24 border-t border-gray-200"
+    >
       <div className="text-center mb-16">
         <h2 className="text-5xl font-bold text-black mb-4">Available Tools</h2>
         <p className="text-xl text-gray-600">
@@ -13,13 +17,13 @@ export const Tools: React.FC = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {[
           { name: "Pen", icon: Pencil },
-          { name: "Rectangle", icon: Shapes },
-          { name: "Circle", icon: Shapes },
-          { name: "Line", icon: Shapes },
+          { name: "Rectangle", icon: IconRectangle },
+          { name: "Circle", icon: IconCircle },
+          { name: "Line", icon: IconLine },
           { name: "Arrow", icon: ArrowRight },
-          { name: "Text", icon: Grid3x3 },
-          { name: "Eraser", icon: Zap },
-          { name: "Select", icon: Layers },
+          { name: "Text", icon: Text },
+          { name: "Eraser", icon: Eraser },
+          { name: "Select", icon: BoxSelect },
         ].map((tool) => (
           <div
             key={tool.name}

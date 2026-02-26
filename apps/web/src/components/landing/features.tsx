@@ -2,7 +2,7 @@ import { Grid3x3, Layers, Pencil, Shapes, Undo2, Zap } from "lucide-react";
 import React from "react";
 export const Features: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-24">
+    <section id="features" className="max-w-7xl mx-auto px-6 py-24">
       <div className="text-center mb-16">
         <h2 className="text-5xl font-bold text-black mb-4">
           Powerful Features

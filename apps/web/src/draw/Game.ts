@@ -35,13 +35,21 @@ export class Game {
   private lineEndX: number = 0;
   private lineEndY: number = 0;
   private selectedTool: Tool = "circle";
+  private backgroundColor: string;
 
-  constructor(canvas: HTMLCanvasElement, roomId: string, socket: WebSocket) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    roomId: string,
+    socket: WebSocket,
+    backgroundColor: string = "#000000",
+  ) {
     this.canvas = canvas;
     this.roomId = roomId;
     this.socket = socket;
     this.ctx = canvas.getContext("2d")!;
     this.clicked = false;
+    this.backgroundColor = backgroundColor;
+
     this.init();
     this.initHandlers();
     this.initMouseHandlers();
@@ -51,9 +59,15 @@ export class Game {
     this.selectedTool = tool;
   }
 
+  // Allow background change dynamically
+  setBackground(color: string) {
+    this.backgroundColor = color;
+    this.redraw();
+  }
+
   async init() {
     this.existingShapes = (await getExistingShapes(this.roomId)) || [];
-    this.clearCanvas();
+    this.redraw();
   }
 
   initHandlers() {
@@ -62,20 +76,29 @@ export class Game {
       if (message.type === "chat") {
         const parsedShape = JSON.parse(message.message);
         this.existingShapes.push(parsedShape);
-        this.clearCanvas();
+        this.redraw();
       }
     };
   }
 
-  clearCanvas() {
+  private redraw() {
+    // Clear
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = "rgb(0,0,0)";
+
+    // Paint background
+    this.ctx.fillStyle = this.backgroundColor;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.existingShapes.map((shape) => {
+
+    // Draw shapes
+    this.existingShapes.forEach((shape) => {
+      this.ctx.strokeStyle = "rgb(225,225,225)";
+      this.ctx.lineWidth = 2;
+
       if (shape.type === "rect") {
-        this.ctx.strokeStyle = "rgb(225,225,225)";
         this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
-      } else if (shape.type === "circle") {
+      }
+
+      if (shape.type === "circle") {
         this.ctx.beginPath();
         this.ctx.arc(
           shape.centerX,
@@ -86,11 +109,14 @@ export class Game {
         );
         this.ctx.stroke();
         this.ctx.closePath();
-      } else if (shape.type === "pencil") {
+      }
+
+      if (shape.type === "pencil") {
         this.ctx.beginPath();
         this.ctx.moveTo(shape.startX, shape.startY);
         this.ctx.lineTo(shape.endX, shape.endY);
         this.ctx.stroke();
+        this.ctx.closePath();
       }
     });
   }
@@ -103,12 +129,12 @@ export class Game {
 
   mouseUpHandler = (e: MouseEvent) => {
     this.clicked = false;
+
     const width = e.clientX - this.startX;
     const height = e.clientY - this.startY;
-    const selectedTool = this.selectedTool;
     let shape: Shape | null = null;
 
-    if (selectedTool === "rect") {
+    if (this.selectedTool === "rect") {
       shape = {
         type: "rect",
         x: this.startX,
@@ -116,15 +142,19 @@ export class Game {
         width,
         height,
       };
-    } else if (selectedTool === "circle") {
-      const radius = Math.abs(Math.max(width, height));
+    }
+
+    if (this.selectedTool === "circle") {
+      const radius = Math.abs(Math.max(width, height) / 2);
       shape = {
         type: "circle",
         radius,
         centerX: this.startX + radius,
         centerY: this.startY + radius,
       };
-    } else if (selectedTool === "pencil") {
+    }
+
+    if (this.selectedTool === "pencil") {
       shape = {
         type: "pencil",
         startX: this.startX,
@@ -135,7 +165,10 @@ export class Game {
     }
 
     if (!shape) return;
+
     this.existingShapes.push(shape);
+    this.redraw();
+
     this.socket.send(
       JSON.stringify({
         type: "chat",
@@ -144,32 +177,42 @@ export class Game {
       }),
     );
   };
-  mouseMoveHandler = (e: MouseEvent) => {
-    if (this.clicked) {
-      this.lineEndX = e.clientX;
-      this.lineEndY = e.clientY;
-      const width = e.clientX - this.startX;
-      const height = e.clientY - this.startY;
 
-      this.clearCanvas();
-      this.ctx.strokeStyle = "rgb(225,225,225)";
-      const selectedTool = this.selectedTool;
-      if (selectedTool === "rect") {
-        this.ctx.strokeRect(this.startX, this.startY, width, height);
-      } else if (selectedTool === "circle") {
-        const radius = Math.abs(Math.max(width, height) / 2);
-        const centerX = this.startX + radius;
-        const centerY = this.startY + radius;
-        this.ctx.beginPath();
-        this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        this.ctx.stroke();
-        this.ctx.closePath();
-      } else if (selectedTool === "pencil") {
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.startX, this.startY);
-        this.ctx.lineTo(this.lineEndX, this.lineEndY);
-        this.ctx.stroke();
-      }
+  mouseMoveHandler = (e: MouseEvent) => {
+    if (!this.clicked) return;
+
+    this.lineEndX = e.clientX;
+    this.lineEndY = e.clientY;
+
+    const width = e.clientX - this.startX;
+    const height = e.clientY - this.startY;
+
+    this.redraw();
+
+    this.ctx.strokeStyle = "rgb(225,225,225)";
+    this.ctx.lineWidth = 2;
+
+    if (this.selectedTool === "rect") {
+      this.ctx.strokeRect(this.startX, this.startY, width, height);
+    }
+
+    if (this.selectedTool === "circle") {
+      const radius = Math.abs(Math.max(width, height) / 2);
+      const centerX = this.startX + radius;
+      const centerY = this.startY + radius;
+
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      this.ctx.stroke();
+      this.ctx.closePath();
+    }
+
+    if (this.selectedTool === "pencil") {
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.startX, this.startY);
+      this.ctx.lineTo(this.lineEndX, this.lineEndY);
+      this.ctx.stroke();
+      this.ctx.closePath();
     }
   };
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useAppContext } from "@/context";
-import { Button } from "@repo/ui/button";
 import { IconLogout, IconPencil } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,47 +17,56 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full flex items-center justify-between px-6 h-14 border-b border-neutral-700 bg-background backdrop-blur">
-      {/* Logo */}
-      <Link
-        href="/"
-        className="flex items-center gap-2 text-xl font-semibold hover:opacity-80 transition"
-      >
-        <IconPencil size={22} />
-        <span>Draw App</span>
-      </Link>
-
-      {/* Right Section */}
-      {!user ? (
-        <div className="flex items-center gap-3">
-          <Link href="/signin">
-            <Button variant="secondary">Signin</Button>
-          </Link>
-          <Link href="/signup">
-            <Button variant="primary">Signup</Button>
-          </Link>
-        </div>
-      ) : (
-        <div className="flex items-center gap-6">
-          {/* User Info */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-full bg-neutral-700 text-sm font-medium">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
-            <span className="text-sm text-neutral-300">{user.username}</span>
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 font-bold text-2xl">
+          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+            <IconPencil size={18} className="text-white" />
           </div>
+          <span>Draw App</span>
+        </Link>
 
-          {/* Logout */}
-          <Button
-            variant="secondary"
-            onClick={handleLogout}
-            className="flex items-center gap-2"
-          >
-            <IconLogout size={16} />
-            Logout
-          </Button>
-        </div>
-      )}
+        {/* Right Section */}
+        {!user ? (
+          <div className="flex items-center gap-3">
+            <Link
+              href="/signin"
+              className="px-6 py-2 rounded-full font-medium hover:bg-gray-900 hover:text-white transition"
+            >
+              Signin
+            </Link>
+
+            <Link
+              href="/signup"
+              className="px-6 py-2 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition"
+            >
+              Signup
+            </Link>
+          </div>
+        ) : (
+          <div className="flex items-center gap-6">
+            {/* User Info */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black text-white text-sm font-medium">
+                {user.username.charAt(0).toUpperCase()}
+              </div>
+              <span className="text-[17px] text-muted-foreground font-medium">
+                {user.username}
+              </span>
+            </div>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="px-6  py-2 rounded-full font-medium hover:bg-neutral-200 hover:text-foreground transition flex items-center gap-2"
+            >
+              <IconLogout size={16} />
+              Logout
+            </button>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

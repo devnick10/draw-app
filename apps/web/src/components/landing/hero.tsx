@@ -1,4 +1,3 @@
-import { IconGrid3x3 } from "@tabler/icons-react";
 import { ArrowRight, Grid3X3 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -29,9 +28,9 @@ export const Hero: React.FC = () => {
         >
           Start Drawing <ArrowRight className="w-4 h-4" />
         </Link>
-        <button className="px-8 py-3 border-2 text-background border-gray-300 rounded-full font-medium hover:border-gray-400 transition">
+        {/* <button className="px-8 py-3 border-2 text-background border-gray-300 rounded-full font-medium hover:border-gray-400 transition">
           Watch Demo
-        </button>
+        </button> */}
       </div>
 
       {/* Hero Image */}

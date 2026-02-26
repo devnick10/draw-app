@@ -32,7 +32,7 @@ export const Rooms = () => {
   return (
     <div className="mt-4 max-w-7xl mx-auto border-t border-neutral-700 pt-4">
       <h3 className="text-2xl mb-3">All Rooms</h3>
-      <div className="text-xl flex flex-col divide-y divide-neutral-700">
+      <div className="text-xl flex flex-col divide-y divide-neutral-300">
         {rooms.length === 0 && (
           <>
             <h3>No rooms yet</h3>
@@ -44,7 +44,7 @@ export const Rooms = () => {
               router.push(`/canvas/${room.id}`);
             }}
             key={idx}
-            className="py-2 text-left hover:bg-neutral-800"
+            className="py-2 text-left hover:bg-neutral-200 rounded-md"
           >
             {room.slug}
           </button>

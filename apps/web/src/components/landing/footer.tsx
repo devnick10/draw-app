@@ -12,13 +12,25 @@ export const Footer: React.FC = () => {
           <span className="font-medium">Canvas</span>
         </div>
         <div className="flex gap-6 text-gray-600">
-          <a href="#" className="hover:text-gray-900 transition">
+          <a
+            target="_blank"
+            href="https://github.com/devnick10/draw-app"
+            className="hover:text-gray-900 transition"
+          >
             GitHub
           </a>
-          <a href="#" className="hover:text-gray-900 transition">
+          <a
+            target="_blank"
+            href="https://github.com/devnick10/draw-app"
+            className="hover:text-gray-900 transition"
+          >
             Docs
           </a>
-          <a href="#" className="hover:text-gray-900 transition">
+          <a
+            target="_blank"
+            href="https://github.com/devnick10/draw-app"
+            className="hover:text-gray-900 transition"
+          >
             Issues
           </a>
         </div>

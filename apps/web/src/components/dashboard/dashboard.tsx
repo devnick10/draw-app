@@ -22,9 +22,7 @@ export const DashboardPage: React.FC = () => {
 
     const res = await axios.post(
       `${HTTP_SERVER}/rooms/create`,
-      {
-        name: roomName,
-      },
+      { name: roomName },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -41,43 +39,49 @@ export const DashboardPage: React.FC = () => {
   }
 
   return (
-    <section className="relative w-full min-h-screen mt-6">
+    <section className="relative w-full min-h-screen bg-white">
       {/* Modal */}
       {popup && (
-        <div className="absolute inset-0 bg-neutral-700/50 flex justify-center items-center">
-          <div className="relative bg-neutral-900 p-6 rounded-md flex flex-col gap-4 w-72">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <div className="relative bg-white p-8 rounded-2xl shadow-xl w-80 flex flex-col gap-5">
             {/* Close Button */}
             <button
               onClick={() => setPopup(false)}
-              className="absolute top-3 right-3 text-neutral-400 hover:text-white text-xl"
+              className="absolute top-4 right-4 text-gray-400 hover:text-black transition"
             >
-              <IconX />
+              <IconX size={20} />
             </button>
 
             {!roomCreated ? (
               <>
-                <h3 className="text-xl mb-2">Create a Room</h3>
+                <h3 className="text-xl font-semibold text-black">
+                  Create a Room
+                </h3>
+
                 <input
-                  placeholder="Name"
-                  className="px-3 py-2 rounded bg-neutral-700 outline-none"
-                  required
+                  placeholder="Room name"
+                  className="px-4 py-2 rounded-lg border border-gray-300 outline-none focus:ring-2 focus:ring-black"
                   value={roomName}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setRoomName(e.target.value)
                   }
                 />
+
                 <button
-                  className="bg-white text-black py-2 rounded"
+                  className="bg-black text-white py-2.5 rounded-full font-medium hover:bg-gray-900 transition"
                   onClick={createRoom}
                 >
-                  Submit
+                  Create
                 </button>
               </>
             ) : (
               <>
-                <h3 className="text-xl mb-2">Room Created Successfully</h3>
+                <h3 className="text-xl font-semibold text-black">
+                  Room Created Successfully
+                </h3>
+
                 <button
-                  className="bg-white text-black py-2 rounded"
+                  className="bg-black text-white py-2.5 rounded-full font-medium hover:bg-gray-900 transition"
                   onClick={() => router.push(`/canvas/${roomId}`)}
                 >
                   Go to Room
@@ -89,24 +93,24 @@ export const DashboardPage: React.FC = () => {
       )}
 
       {/* Create Button */}
-      <div className="w-full flex items-center justify-center">
+      <div className="max-w-7xl mx-auto px-6 py-20 flex justify-center">
         <button
-          className="cursor-pointer flex flex-col items-center p-6 border border-neutral-500 bg-neutral-800 rounded-md"
+          className="flex flex-col items-center gap-3 px-10 py-10 border border-gray-300 rounded-2xl hover:shadow-md hover:border-gray-400 transition"
           onClick={() => {
             setRoomCreated(false);
             setPopup(true);
           }}
         >
-          <IconPlus size={50} />
-          <h3>Create a canvas</h3>
+          <IconPlus size={40} />
+          <h3 className="text-lg font-medium">Create a Canvas</h3>
         </button>
       </div>
 
       {/* Rooms */}
       <Suspense
         fallback={
-          <div className="w-full h-screen flex justify-center items-center">
-            <h1>Loading...</h1>
+          <div className="w-full h-64 flex justify-center items-center text-gray-500">
+            Loading...
           </div>
         }
       >

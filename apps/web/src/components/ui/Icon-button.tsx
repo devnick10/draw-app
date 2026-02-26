@@ -7,13 +7,26 @@ interface IconButtonProps {
   isActive: boolean;
   size?: number;
 }
-export const IconButton: React.FC<IconButtonProps> = (props) => {
+
+export const IconButton: React.FC<IconButtonProps> = ({
+  onClick,
+  Icon,
+  isActive,
+  size = 22,
+}) => {
   return (
-    <button onClick={props.onClick}>
-      <props.Icon
-        size={props.size || 40}
-        className={`${props.isActive ? "text-red-300" : "text-white"}`}
-      />
+    <button
+      onClick={onClick}
+      className={`
+        p-2 rounded-xl transition-all duration-200
+        ${
+          isActive
+            ? "bg-black text-white shadow-md"
+            : "text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800"
+        }
+      `}
+    >
+      <Icon size={size} />
     </button>
   );
 };
