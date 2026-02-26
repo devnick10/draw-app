@@ -22,7 +22,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 
         setUser(res.data);
       } catch (error) {
-        console.error(error)
+        console.error(error);
         router.replace("/signin");
       } finally {
         setLoading(false);
@@ -30,7 +30,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
 
     getUser();
-  }, [router,setUser]);
+  }, [router, setUser]);
 
   if (loading) {
     return (
