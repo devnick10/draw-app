@@ -27,7 +27,7 @@ export default function LandingPage() {
           </Link>
           <div className="flex items-center gap-8">
             <Link
-              href="/canvas"
+              href="/signin"
               className="px-6 py-2 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition"
             >
               Launch App
@@ -56,7 +56,7 @@ export default function LandingPage() {
 
         <div className="flex gap-4 justify-center mb-16">
           <Link
-            href="/canvas"
+            href="/signin"
             className="px-8 py-3 bg-black text-white rounded-full font-medium flex items-center gap-2 hover:bg-gray-900 transition"
           >
             Start Drawing <IconArrowRight className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function LandingPage() {
             signup required.
           </p>
           <Link
-            href="/canvas"
+            href="/signin"
             className="inline-flex items-center gap-2 px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-100 transition"
           >
             Launch Canvas <IconArrowRight className="w-4 h-4" />
