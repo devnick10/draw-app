@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd drawapp
+            cd draw-app
             git pull origin production
             pnpm install
             pnpm turbo run build
