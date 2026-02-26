@@ -1,0 +1,30 @@
+name: Deploy to prod
+
+on:
+  push:
+    branches:
+      - production 
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.SSH_HOST}}
+          username: ${{secrets.SSH_USERNAME}}
+          key: ${{secrets.SSH_KEY}}
+          target: drawapp
+          script: |
+            git pull origin production
+            pnpm install
+            pnpm turbo run build
+            pm2 restart htt-server
+            pm2 restart ws-server
+            pm2 restart fe-server
+                
+
+
+        
+
