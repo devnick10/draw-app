@@ -19,7 +19,7 @@ jobs:
             export NVM_DIR="/root/.nvm"
             source $NVM_DIR/nvm.sh
             nvm use 24
-            cd drawapp
+            cd draw-app
             git pull origin production
             pnpm install
             pnpm turbo run build
