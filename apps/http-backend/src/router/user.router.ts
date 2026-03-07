@@ -4,8 +4,7 @@ import { prisma } from "@repo/db";
 import { compare, hash } from "bcrypt";
 import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
-import { authMidlleware } from "../middleware";
-import { NODE_ENV } from "../config";
+import { authMidlleware } from "../middlewares/authMiddleware";
 
 const userRouter: Router = Router();
 

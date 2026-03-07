@@ -7,7 +7,7 @@ import { connectDb } from "./config/db.js";
 import { userRouter } from "./router/user.router.js";
 import { healthCheckRouter } from "./router/health-check.route.js";
 import morgan from "morgan";
-import { errorHandler } from "./errorHandler.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import { roomRouter } from "./router/room.router.js";
 import cookieParser from "cookie-parser";
 const app = express();
