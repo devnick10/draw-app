@@ -1,7 +1,8 @@
 import "dotenv/config";
 import { WebSocketServer, type WebSocket } from "ws";
 import { checkAuth } from "./lib/checkAuth";
-import { prisma } from "@repo/db";
+import { prisma, ShapeType } from "@repo/db";
+import { MessageSchema } from "./schema";
 const wss = new WebSocketServer({ port: 8080 });
 
 interface User {
@@ -24,22 +25,32 @@ wss.on("connection", (ws, req) => {
   ws.on("error", console.error);
 
   ws.on("message", async (data) => {
-    // TODO : add check and db calls and userId input validation;
-    const parsedData = JSON.parse(data as unknown as string);
+    // TODO : add check and db calls and
+    const parsedData = JSON.parse(data.toString());
+    const result = MessageSchema.safeParse(parsedData);
+    if (!result.success) {
+      ws.send(
+        JSON.stringify({
+          type: "error",
+          error: "invalid inputs",
+        }),
+      );
+      return;
+    }
 
     // join room
-    if (parsedData.type === "join_room") {
-      //@ts-ignore
-      const roomId = parsedData.roomId;
-      room.set(roomId, []);
+    if (result.data.type === "join_room") {
+      const { roomId } = result.data;
+      if (!room.has(roomId)) {
+        room.set(roomId, []);
+      }
       room.get(roomId)?.push({ userId, socket: ws });
       return;
     }
 
     // leave room
-    if (parsedData.type === "leave_room") {
-      //@ts-ignore
-      const roomId = parsedData.roomId;
+    if (result.data.type === "leave_room") {
+      const { roomId } = result.data;
 
       room.set(
         roomId,
@@ -51,37 +62,25 @@ wss.on("connection", (ws, req) => {
       return;
     }
 
-    // chat
-    if (parsedData.type === "chat") {
-      /**
-       * {
-       *  type:"chat",
-       *  message:"mssage",
-       *  roomId:"id"
-       * }
-       */
-
-      //@ts-ignore
-      const roomId = parsedData.roomId;
-      //@ts-ignore
-      const message = parsedData.message;
+    if (result.data.type === "shape") {
+      const { roomId, shape } = result.data;
       const myRoom = room.get(roomId);
 
-      // @ts-ignore
-      await prisma.chat.create({
+      await prisma.shape.create({
         data: {
-          message,
-          roomId,
           userId,
+          roomId,
+          type: shape.type.toUpperCase() as ShapeType,
+          data: shape,
         },
       });
 
       myRoom?.forEach((user) =>
         user.socket.send(
           JSON.stringify({
-            type: "chat",
-            message,
+            type: "shape",
             roomId,
+            shape,
           }),
         ),
       );
