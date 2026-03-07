@@ -72,11 +72,14 @@ export class Game {
 
   initHandlers() {
     this.socket.onmessage = (e) => {
-      const message = JSON.parse(e.data);
-      if (message.type === "chat") {
-        const parsedShape = JSON.parse(message.message);
-        this.existingShapes.push(parsedShape);
+      const parsedMessage = JSON.parse(e.data);
+      if (parsedMessage.type === "shape") {
+        const shape = parsedMessage.shape;
+        this.existingShapes.push(shape);
         this.redraw();
+      } else if (parsedMessage.type === "error") {
+        console.log(parsedMessage.error);
+        return;
       }
     };
   }
@@ -171,8 +174,8 @@ export class Game {
 
     this.socket.send(
       JSON.stringify({
-        type: "chat",
-        message: JSON.stringify(shape),
+        type: "shape",
+        shape,
         roomId: this.roomId,
       }),
     );

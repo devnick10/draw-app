@@ -24,7 +24,7 @@ export const Navbar: React.FC = () => {
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
             <IconPencil size={18} className="text-white" />
           </div>
-          <span>Draw App</span>
+          <span className="text-sm sm:text-[1.6rem]">Draw App</span>
         </Link>
 
         {/* Right Section */}

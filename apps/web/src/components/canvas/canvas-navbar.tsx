@@ -27,7 +27,7 @@ export const CanvasNavbar: React.FC<CanvasNavbarProps> = ({
   };
 
   const handleCopy = async () => {
-    const roomUrl = `${window.location.origin}/room/${roomId}`;
+    const roomUrl = `${window.location.origin}/canvas/${roomId}`;
     await navigator.clipboard.writeText(roomUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);

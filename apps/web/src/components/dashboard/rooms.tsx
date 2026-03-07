@@ -30,7 +30,7 @@ export const Rooms = () => {
     });
   }, []);
   return (
-    <div className="mt-4 max-w-7xl mx-auto border-t border-neutral-700 pt-4">
+    <div className="mt-4 px-10 max-w-7xl mx-auto border-t border-neutral-700 pt-4">
       <h3 className="text-2xl mb-3">All Rooms</h3>
       <div className="text-xl flex flex-col divide-y divide-neutral-300">
         {rooms.length === 0 && (
