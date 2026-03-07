@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { HttpError } from "http-errors";
-import { NODE_ENV } from "./config";
+import { NODE_ENV } from "../config";
 export const errorHandler = async (
   err: Error | HttpError,
   req: Request,

@@ -13,7 +13,7 @@ model User {
   email    String  @unique
   password String
   avatar   String?
-  chats    Chat[]
+  shapes   Shape[]
   rooms    Room[]
 }
 
@@ -21,17 +21,24 @@ model Room {
   id       String   @id @default(uuid())
   slug     String   @unique
   adminId  String
-  chats    Chat[]
+  shapes   Shape[]
   admin    User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   createAt DateTime @default(now())
 }
 
-model Chat {
-  id       Int      @id @default(autoincrement())
-  message  String
+model Shape {
+  id       Int       @id @default(autoincrement())
+  type     ShapeType
+  data     Json
   roomId   String
   userId   String
-  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createAt DateTime @default(now())
+  room     Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createAt DateTime  @default(now())
+}
+
+enum ShapeType {
+  RECT
+  CIRCLE
+  PENCIL
 }

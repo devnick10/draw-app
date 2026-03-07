@@ -9,7 +9,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
-    "build": "tsc -b"
+    "build": "pnpm run db:generate && tsc -b"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

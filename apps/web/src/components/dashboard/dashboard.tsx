@@ -21,7 +21,7 @@ export const DashboardPage: React.FC = () => {
     }
 
     const res = await axios.post(
-      `${HTTP_SERVER}/rooms/create`,
+      `${HTTP_SERVER}/rooms`,
       { name: roomName },
       {
         headers: {

@@ -62,7 +62,6 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
   return (
     <div className="h-screen w-full flex justify-center items-center bg-gray-50 dark:bg-black font-inter">
       <div className="w-[360px] rounded-2xl p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-lg flex gap-4 flex-col">
-
         <div className="mb-2 text-center">
           <h1 className="text-2xl font-semibold text-black dark:text-white">
             {mode === "signin" ? "Sign in" : "Create account"}
