@@ -11,7 +11,7 @@ const userRouter: Router = Router();
 userRouter.post("/signin", async (req: Request, res: Response) => {
   const { data, success } = SigninSchema.safeParse(req.body);
   if (!success) {
-    res.status(400).json({
+    res.status(411).json({
       message: "Invalid inputs",
     });
     return;
@@ -31,7 +31,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
 
   const isPasswordValid = compare(data?.password, user.password);
   if (!isPasswordValid) {
-    res.status(400).json({
+    res.status(411).json({
       message: "Invalid credentials",
     });
     return;
@@ -48,7 +48,7 @@ userRouter.post("/signin", async (req: Request, res: Response) => {
 userRouter.post("/signup", async (req: Request, res: Response) => {
   const { data, success } = SignupSchema.safeParse(req.body);
   if (!success) {
-    res.status(400).json({
+    res.status(411).json({
       message: "Invalid inputs",
     });
     return;
@@ -59,8 +59,9 @@ userRouter.post("/signup", async (req: Request, res: Response) => {
       email: data.email,
     },
   });
+
   if (userExist) {
-    res.status(409).json({
+    res.status(400).json({
       message: "Email is taken!",
     });
     return;

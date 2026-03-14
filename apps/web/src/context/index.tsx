@@ -10,6 +10,8 @@ interface User {
 interface AppContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  createDrawingModel: boolean;
+  setCreateDrawingModel: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -20,9 +22,17 @@ export const ContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [createDrawingModel, setCreateDrawingModel] = useState<boolean>(false);
 
   return (
-    <AppContext.Provider value={{ user, setUser }}>
+    <AppContext.Provider
+      value={{
+        user,
+        setUser,
+        createDrawingModel,
+        setCreateDrawingModel,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

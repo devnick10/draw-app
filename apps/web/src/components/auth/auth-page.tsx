@@ -6,6 +6,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
+import toast from "react-hot-toast";
+import { SpinnerCustom } from "../ui/spinner";
 type AuthMode = "signin" | "signup";
 
 type AuthFormState = {
@@ -14,10 +16,9 @@ type AuthFormState = {
   username?: string;
 };
 
-const inputClassName =
-  "py-1.5 px-2.5 dark:bg-neutral-500 dark:text-neutral-100 outline-none rounded-sm";
 
 export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
+  const [loading, setLoading] = useState(false);
   const mode: AuthMode = isSignin ? "signin" : "signup";
   const [form, setForm] = useState<AuthFormState>({
     email: "",
@@ -33,35 +34,46 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
   const submitMap = {
     signin: async () => {
       try {
+        setLoading(true);
         const res = await axios.post(`${HTTP_SERVER}/users/signin`, form);
-        if (res.status !== 200) {
-          throw new Error("Signin failed!");
-        }
         localStorage.setItem("token", res.data.token);
         router.push("/dashboard");
-      } catch (error) {
-        console.error(error);
-        alert("Signin failed!");
+        toast.success("Signin successfully.");
+      } catch (error: any) {
+        if (error.response?.status === 411) {
+          toast.error("Invalid credentails");
+        } else if (error.response?.status === 400) {
+          toast.error("Invalid credentails");
+        }
+      } finally {
+        setLoading(false);
       }
     },
     signup: async () => {
       try {
+        setLoading(true);
         const res = await axios.post(`${HTTP_SERVER}/users/signup`, form);
         if (res.status !== 201) {
           throw new Error("Signup failed!");
         }
         localStorage.setItem("token", res.data.token);
         router.push("/dashboard");
-      } catch (error) {
-        console.error(error);
-        alert("Signup failed!");
+        toast.success("Signup successfully.");
+      } catch (error: any) {
+        if (error.response?.status === 411) {
+          toast.error("Invalid credentails");
+        } else if (error.response?.status === 400) {
+          toast.error("Invalid credentails");
+        }
+      } finally {
+        setLoading(false);
       }
     },
   };
 
   return (
     <div className="h-screen w-full flex justify-center items-center bg-gray-50 dark:bg-black font-inter">
-      <div className="w-[360px] rounded-2xl p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-lg flex gap-4 flex-col">
+      <div className="w-90 rounded-2xl p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-lg flex gap-4 flex-col">
         <div className="mb-2 text-center">
           <h1 className="text-2xl font-semibold text-black dark:text-white">
             {mode === "signin" ? "Sign in" : "Create account"}
@@ -119,8 +131,20 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
             : "Already have an account? Sign in"}
         </Link>
 
-        <Button variant="primary" onClick={submitMap[mode]}>
-          {mode === "signin" ? "Sign in" : "Sign up"}
+        <Button
+          variant="primary"
+          onClick={submitMap[mode]}
+          className="flex items-center justify-center gap-2"
+        >
+          {loading && <SpinnerCustom />}
+
+          {loading
+            ? mode === "signin"
+              ? "Signing in..."
+              : "Creating account..."
+            : mode === "signin"
+              ? "Sign in"
+              : "Sign up"}
         </Button>
       </div>
     </div>

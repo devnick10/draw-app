@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import { Poppins, Inter } from "next/font/google";
-import "@repo/ui/styles.css";
-import "./globals.css";
 import { ContextProvider } from "@/context";
+import "@repo/ui/styles.css";
+import type { Metadata } from "next";
+import { Inter, Poppins } from "next/font/google";
+import "./globals.css";
 
 const geistSans = Poppins({
   variable: "--font-poppins",

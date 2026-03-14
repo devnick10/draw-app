@@ -5,6 +5,7 @@ import { HTTP_SERVER } from "@/lib/config";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { SpinnerCustom } from "../ui/spinner";
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const { user, setUser } = useAppContext();
@@ -35,7 +36,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
-        <h1>Loading...</h1>
+        <SpinnerCustom />
       </div>
     );
   }
