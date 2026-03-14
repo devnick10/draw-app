@@ -1,52 +1,99 @@
 "use client";
+import { Room } from "@/app/types";
+import { useAppContext } from "@/context";
 import { HTTP_SERVER } from "@/lib/config";
-import { IconPlus, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import axios from "axios";
+import { Grid3X3, List } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, Suspense, useState } from "react";
+import React, { ChangeEvent, Suspense, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { Rooms } from "./rooms";
+import { SearchBar } from "./search-bar";
+import { SpinnerCustom } from "../ui/spinner";
 
 export const DashboardPage: React.FC = () => {
-  const [popup, setPopup] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { createDrawingModel, setCreateDrawingModel } = useAppContext();
   const [roomCreated, setRoomCreated] = useState<boolean>(false);
   const [roomName, setRoomName] = useState<string>("");
   const [roomId, setRoomId] = useState<string>("");
-
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [rooms, setRooms] = useState<Room[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    async function fetchRooms() {
+      try {
+        const res = await axios.get(`${HTTP_SERVER}/rooms`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+
+        setRooms(res.data.rooms);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    fetchRooms();
+  }, []);
 
   async function createRoom() {
     if (!roomName) {
-      alert("room name is required!");
+      toast.error("Room name is required");
       return;
     }
 
-    const res = await axios.post(
-      `${HTTP_SERVER}/rooms`,
-      { name: roomName },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        `${HTTP_SERVER}/rooms`,
+        { name: roomName },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         },
-      },
-    );
+      );
 
-    if (res.status === 201) {
-      setRoomId(res.data.roomId);
-      setRoomCreated(true);
-    } else {
-      throw new Error("failed to create room!");
+      if (res.status === 201) {
+        setRoomId(res.data.roomId);
+        setRoomCreated(true);
+      }
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        toast.error("Room name already exists! Try different one.");
+      } else if (err.response?.status === 411) {
+        toast.error("Invalid inputs");
+      } else {
+        toast.error("Something went wrong");
+      }
+    } finally {
+      setLoading(false);
     }
   }
-
   return (
     <section className="relative w-full min-h-screen bg-white">
+      <div className="w-full max-w-7xl mx-auto mt-6 mb-2 flex justify-between ">
+        <SearchBar setRooms={setRooms} />
+        <div className="flex items-center gap-2">
+          <button onClick={() => setViewMode("grid")}>
+            <Grid3X3 className="size-5" />
+          </button>
+          <button onClick={() => setViewMode("list")}>
+            <List className="size-5" />
+          </button>
+        </div>
+      </div>
       {/* Modal */}
-      {popup && (
+      {createDrawingModel && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
           <div className="relative bg-white p-8 rounded-2xl shadow-xl w-80 flex flex-col gap-5">
             {/* Close Button */}
             <button
-              onClick={() => setPopup(false)}
+              onClick={() => setCreateDrawingModel(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-black transition"
             >
               <IconX size={20} />
@@ -68,10 +115,11 @@ export const DashboardPage: React.FC = () => {
                 />
 
                 <button
-                  className="bg-black text-white py-2.5 rounded-full font-medium hover:bg-gray-900 transition"
+                  className="bg-black text-white py-2.5 rounded-full font-medium hover:bg-gray-900 transition flex  justify-center gap-2"
                   onClick={createRoom}
                 >
-                  Create
+                  {loading && <SpinnerCustom />}
+                  {loading ? "Creating" : "Create"}
                 </button>
               </>
             ) : (
@@ -91,21 +139,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Create Button */}
-      <div className="max-w-7xl mx-auto px-6 py-20 flex justify-center">
-        <button
-          className="flex flex-col items-center gap-3 px-10 py-10 border border-gray-300 rounded-2xl hover:shadow-md hover:border-gray-400 transition"
-          onClick={() => {
-            setRoomCreated(false);
-            setPopup(true);
-          }}
-        >
-          <IconPlus size={40} />
-          <h3 className="text-lg font-medium">Create a Canvas</h3>
-        </button>
-      </div>
-
       {/* Rooms */}
       <Suspense
         fallback={
@@ -114,7 +147,9 @@ export const DashboardPage: React.FC = () => {
           </div>
         }
       >
-        <Rooms />
+        <div className="w-full max-w-7xl mx-auto">
+          <Rooms rooms={rooms} viewMode={viewMode} setRooms={setRooms} />
+        </div>
       </Suspense>
     </section>
   );

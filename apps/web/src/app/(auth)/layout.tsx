@@ -3,6 +3,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { useAppContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -22,6 +23,7 @@ export default function RootLayout({
     <>
       <Navbar />
       <main>{children}</main>
+      <Toaster position={"top-center"} />
     </>
   );
 }
