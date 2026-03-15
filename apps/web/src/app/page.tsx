@@ -7,7 +7,7 @@ import { Tools } from "@/components/landing/tools";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-neutral-100">
       <Navbar />
       <Hero />
       <Features />
