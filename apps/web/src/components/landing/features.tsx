@@ -1,5 +1,4 @@
 import { features } from "@/constant/features";
-import { Grid3x3, Layers, Pencil, Shapes, Undo2, Zap } from "lucide-react";
 import React from "react";
 export const Features: React.FC = () => {
   return (

@@ -1,10 +1,10 @@
 "use client";
 
 import { useAppContext } from "@/context";
-import { HTTP_SERVER } from "@/lib/config";
-import axios from "axios";
+import { getUserApi } from "@/lib/api/user";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { SpinnerCustom } from "../ui/spinner";
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
@@ -13,17 +13,24 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
 
   useEffect(() => {
+    if (user) {
+      setLoading(false);
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.replace("/signin");
+      return;
+    }
+
     async function getUser() {
       try {
-        const res = await axios.get(`${HTTP_SERVER}/users/me`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        setUser(res.data);
-      } catch (error) {
-        console.error(error);
+        const { user } = await getUserApi()
+        setUser(user);
+      } catch (error: any) {
+        toast.error(error?.message)
         router.replace("/signin");
       } finally {
         setLoading(false);
@@ -31,7 +38,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
 
     getUser();
-  }, [router, setUser]);
+  }, [router, setUser, user]);
 
   if (loading) {
     return (

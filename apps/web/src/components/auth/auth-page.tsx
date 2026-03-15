@@ -1,8 +1,8 @@
-"use client";
+ "use client";
 
-import { HTTP_SERVER } from "@/lib/config";
-import { Button } from "@repo/ui/button";
-import axios from "axios";
+import { useAppContext } from "@/context";
+import { signinApi, signupApi } from "@/lib/api/auth";
+import { AuthForm } from "@/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
@@ -10,24 +10,20 @@ import toast from "react-hot-toast";
 import { SpinnerCustom } from "../ui/spinner";
 type AuthMode = "signin" | "signup";
 
-type AuthFormState = {
-  email: string;
-  password: string;
-  username?: string;
-};
-
-
 export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
+  const { setUser } = useAppContext();
+
   const [loading, setLoading] = useState(false);
   const mode: AuthMode = isSignin ? "signin" : "signup";
-  const [form, setForm] = useState<AuthFormState>({
+  const [form, setForm] = useState<AuthForm>({
     email: "",
     password: "",
     username: "",
   });
   const router = useRouter();
+
   const handleChange =
-    (key: keyof AuthFormState) => (e: ChangeEvent<HTMLInputElement>) => {
+    (key: keyof AuthForm) => (e: ChangeEvent<HTMLInputElement>) => {
       setForm((prev) => ({ ...prev, [key]: e.target.value }));
     };
 
@@ -35,16 +31,16 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
     signin: async () => {
       try {
         setLoading(true);
-        const res = await axios.post(`${HTTP_SERVER}/users/signin`, form);
-        localStorage.setItem("token", res.data.token);
+
+        const { user, token } = await signinApi(form);
+
+        localStorage.setItem("token", token);
+        setUser(user)
+
         router.push("/dashboard");
         toast.success("Signin successfully.");
       } catch (error: any) {
-        if (error.response?.status === 411) {
-          toast.error("Invalid credentails");
-        } else if (error.response?.status === 400) {
-          toast.error("Invalid credentails");
-        }
+        toast.error(error?.message)
       } finally {
         setLoading(false);
       }
@@ -52,19 +48,16 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
     signup: async () => {
       try {
         setLoading(true);
-        const res = await axios.post(`${HTTP_SERVER}/users/signup`, form);
-        if (res.status !== 201) {
-          throw new Error("Signup failed!");
-        }
-        localStorage.setItem("token", res.data.token);
+
+        const { user, token } = await signupApi(form);
+
+        localStorage.setItem("token", token);
+        setUser(user)
+
         router.push("/dashboard");
         toast.success("Signup successfully.");
       } catch (error: any) {
-        if (error.response?.status === 411) {
-          toast.error("Invalid credentails");
-        } else if (error.response?.status === 400) {
-          toast.error("Invalid credentails");
-        }
+        toast.error(error?.message);
       } finally {
         setLoading(false);
       }

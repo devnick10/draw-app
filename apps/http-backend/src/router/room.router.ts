@@ -7,15 +7,12 @@ import { DeleteRoomSchema, GetShapeByRoomIdSchema } from "../schema.js";
 
 const roomRouter: Router = Router();
 
-roomRouter.post("/", authMidlleware, async (req: Request, res: Response) => {
+roomRouter.post("/", authMidlleware, async (req: Request, res: Response, next: NextFunction) => {
   // @ts-ignore
   const userId = req.userId;
   const { data, success } = CreateRoomSchema.safeParse(req.body);
   if (!success) {
-    res.status(411).json({
-      message: "Invalid inputs",
-    });
-    return;
+    return next(apiError(411, "Invalid inputs"));
   }
 
   try {
@@ -27,10 +24,7 @@ roomRouter.post("/", authMidlleware, async (req: Request, res: Response) => {
     });
 
     if (isRoomExist) {
-      res.status(400).json({
-        message: "room name already exist,",
-      });
-      return;
+      return next(apiError(400, "Room name already exist,"));
     }
 
     const newRoom = await prisma.room.create({
@@ -41,10 +35,7 @@ roomRouter.post("/", authMidlleware, async (req: Request, res: Response) => {
     });
 
     if (!newRoom) {
-      res.status(500).json({
-        message: "Internal server error!",
-      });
-      return;
+      return next(apiError(500, "Internal server error!"));
     }
 
     res.status(201).json({
@@ -78,6 +69,9 @@ roomRouter.get(
       take: 500,
     });
 
+    if (!shapes) {
+      return next(apiError(404, "Room not found"));
+    }
     res.status(200).json({
       message: "Shapes fetched.",
       shapes,
@@ -140,9 +134,7 @@ roomRouter.get(
       const { q } = req.query;
 
       if (!q || typeof q !== "string") {
-        return res.status(400).json({
-          message: "Search query is required",
-        });
+        return next(apiError(400, "Search query is required"));
       }
 
       const rooms = await prisma.room.findMany({

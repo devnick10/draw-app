@@ -1,27 +1,27 @@
+import { getShapes } from "@/lib/api/rooms";
 import { Tool } from "@/lib/types";
-import { getExistingShapes } from "./http";
 
 type Shape =
   | {
-      type: "rect";
-      width: number;
-      height: number;
-      y: number;
-      x: number;
-    }
+    type: "rect";
+    width: number;
+    height: number;
+    y: number;
+    x: number;
+  }
   | {
-      type: "circle";
-      centerX: number;
-      centerY: number;
-      radius: number;
-    }
+    type: "circle";
+    centerX: number;
+    centerY: number;
+    radius: number;
+  }
   | {
-      type: "pencil";
-      startX: number;
-      startY: number;
-      endX: number;
-      endY: number;
-    };
+    type: "pencil";
+    startX: number;
+    startY: number;
+    endX: number;
+    endY: number;
+  };
 
 export class Game {
   private canvas: HTMLCanvasElement;
@@ -66,7 +66,7 @@ export class Game {
   }
 
   async init() {
-    this.existingShapes = (await getExistingShapes(this.roomId)) || [];
+    this.existingShapes = (await getShapes(this.roomId)) || [];
     this.redraw();
   }
 
