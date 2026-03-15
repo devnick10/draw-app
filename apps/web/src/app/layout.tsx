@@ -1,16 +1,22 @@
 import { ContextProvider } from "@/context";
 import "@repo/ui/styles.css";
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Poppins,Marck_Script } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Poppins({
+const markScript = Marck_Script({
+  variable: "--font-marck",
+  subsets: ["latin"],
+  weight:  ["400"],
+});
+
+const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-const geistMono = Inter({
+const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -30,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${inter.variable} ${markScript.variable} antialiased`}
       >
         <ContextProvider>{children}</ContextProvider>
       </body>

@@ -4,18 +4,18 @@ import React from "react";
 
 export const Hero: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto px-6 py-24 text-center">
+    <section className="max-w-7xl mx-auto px-6 py-24 text-center bg-linear-150 ">
       <div className="mb-8 inline-block">
         {/* <span className="bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-medium"> */}
         {/* Free to use, forever */}
         {/* </span> */}
       </div>
 
-      <h1 className="text-7xl font-bold text-black mb-6 text-balance">
+      <h1 className="text-7xl font-script font-bold text-black mb-1 text-balance">
         Draw. Create. Sketch.
       </h1>
 
-      <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto text-balance">
+      <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto text-balance font-sans">
         A minimalist canvas drawing application with powerful tools for
         sketching, designing, and creating. Infinite canvas with undo/redo,
         layers, and real-time editing.
@@ -24,7 +24,7 @@ export const Hero: React.FC = () => {
       <div className="flex gap-4 justify-center mb-16">
         <Link
           href="/signin"
-          className="px-8 py-3 bg-black text-white rounded-full font-medium flex items-center gap-2 hover:bg-gray-900 transition"
+          className="px-6 py-2 bg-black text-white rounded-full font-poppins flex items-center gap-2 hover:bg-gray-900 transition shadow-neutral-500 shadow-md"
         >
           Start Drawing <ArrowRight className="w-4 h-4" />
         </Link>

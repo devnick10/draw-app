@@ -8,8 +8,8 @@ export const Tools: React.FC = () => {
       className="max-w-7xl mx-auto px-6 py-24 border-t border-gray-200"
     >
       <div className="text-center mb-16">
-        <h2 className="text-5xl font-bold text-black mb-4">Available Tools</h2>
-        <p className="text-xl text-gray-600">
+        <h2 className="text-5xl font-script font-medium text-black mb-1">Available Tools</h2>
+        <p className="text-xl text-gray-600 font-sans">
           A complete toolkit for drawing and sketching
         </p>
       </div>
@@ -32,7 +32,7 @@ export const Tools: React.FC = () => {
             <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center mx-auto mb-3">
               <tool.icon className="w-5 h-5 text-white" />
             </div>
-            <p className="font-medium text-gray-900">{tool.name}</p>
+            <p className="font-medium text-neutral-700 font-sans">{tool.name}</p>
           </div>
         ))}
       </div>
