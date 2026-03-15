@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppContext } from "@/context";
-import { IconLogout, IconPencil, IconPlus } from "@tabler/icons-react";
+import { IconLogout, IconPlus } from "@tabler/icons-react";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

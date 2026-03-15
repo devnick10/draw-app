@@ -1,10 +1,9 @@
 "use client";
 
-import { Room } from "@/app/types";
-import { HTTP_SERVER } from "@/lib/config";
+import { searchRooms } from "@/lib/api/rooms";
+import { Room } from "@/lib/types";
 import { IconSearch } from "@tabler/icons-react";
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
@@ -19,48 +18,38 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
 }
 
 interface SearchBarProps {
+  query:string;
+  allRooms:Room[];
   setRooms: React.Dispatch<React.SetStateAction<Room[]>>;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ setRooms }) => {
-  const [query, setQuery] = useState("");
-
-  const searchRooms = async (value: string) => {
+export const SearchBar: React.FC<SearchBarProps> = (props) => {
+  
+  const handleSearch = async (value: string) => {
     try {
-      if (!value) {
-        try {
-          const res = await axios.get(`${HTTP_SERVER}/rooms`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          });
 
-          setRooms(res.data.rooms);
-          return;
-        } catch (error) {
-          toast.error("Internal server error!");
-          console.log(error);
-        }
+      if (!value.trim()) {
+        props.setRooms(props.allRooms); // restore cached rooms
+        return;
       }
 
-      const res = await axios.get(`${HTTP_SERVER}/rooms/search`, {
-        params: { q: value },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const rooms = await searchRooms(value);
+      props.setRooms(rooms);
 
-      setRooms(res.data.rooms);
-    } catch (err) {
-      console.error("Search failed", err);
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
-  const debouncedSearch =  debounce(searchRooms, 400)
+  const debouncedSearch = React.useMemo(
+    () => debounce(handleSearch, 400),
+    [props.allRooms]
+  );
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const value = e.target.value;
-    setQuery(value);
+    props.setQuery(value);
     debouncedSearch(value);
   }
 
@@ -73,7 +62,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ setRooms }) => {
 
         <input
           type="search"
-          value={query}
+          value={props.query}
           onChange={handleChange}
           placeholder="Search rooms..."
           className="block w-full p-3 ps-9 border border-neutral-300 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-black"
