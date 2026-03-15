@@ -75,10 +75,10 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
     <div className="h-screen w-full flex justify-center items-center bg-gray-50 dark:bg-black font-inter">
       <div className="w-90 rounded-2xl p-6 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-lg flex gap-4 flex-col">
         <div className="mb-2 text-center">
-          <h1 className="text-2xl font-semibold text-black dark:text-white">
+          <h1 className="font-semibold font-poppins text-2xl  text-black dark:text-white">
             {mode === "signin" ? "Sign in" : "Create account"}
           </h1>
-          <p className="text-sm text-gray-500 dark:text-zinc-400 mt-1">
+          <p className="font-sans text-neutral-700 dark:text-zinc-400 ">
             {mode === "signin"
               ? "Sign in to your account."
               : "Create a new account."}
@@ -86,8 +86,8 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
         </div>
 
         {mode === "signup" && (
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-gray-700 dark:text-zinc-300">
+          <div className="flex flex-col gap-2 font-sans">
+            <label className="text-sm text-gray-700 dark:text-zinc-300 ">
               Username
             </label>
             <input
@@ -98,7 +98,7 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 font-sans">
           <label className="text-sm text-gray-700 dark:text-zinc-300">
             Email
           </label>
@@ -110,7 +110,7 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 font-sans">
           <label className="text-sm text-gray-700 dark:text-zinc-300">
             Password
           </label>
@@ -121,31 +121,31 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
             onChange={handleChange("password")}
           />
         </div>
+        <div className="flex justify-center items-center flex-col font-sans">
+          <Link
+            className="text-sm font-sans text-neutral-700 dark:text-zinc-400 hover:underline text-center"
+            href={mode === "signin" ? "/signup" : "/signin"}
+          >
+            {mode === "signin"
+              ? "Don't have an account? Sign up"
+              : "Already have an account? Sign in"}
+          </Link>
 
-        <Link
-          className="text-sm text-gray-600 dark:text-zinc-400 hover:underline text-center"
-          href={mode === "signin" ? "/signup" : "/signin"}
-        >
-          {mode === "signin"
-            ? "Don't have an account? Sign up"
-            : "Already have an account? Sign in"}
-        </Link>
+          <button
+            onClick={submitMap[mode]}
+            className=" flex w-full max-w-sm items-center justify-center gap-2 px-8 py-2 mt-2 bg-black text-white rounded-md font-medium font-sans  hover:bg-gray-900 transition"
+          >
+            {loading && <SpinnerCustom />}
 
-        <Button
-          variant="primary"
-          onClick={submitMap[mode]}
-          className="flex items-center justify-center gap-2"
-        >
-          {loading && <SpinnerCustom />}
-
-          {loading
-            ? mode === "signin"
-              ? "Signing in..."
-              : "Creating account..."
-            : mode === "signin"
-              ? "Sign in"
-              : "Sign up"}
-        </Button>
+            {loading
+              ? mode === "signin"
+                ? "Signing in..."
+                : "Creating account..."
+              : mode === "signin"
+                ? "Sign in"
+                : "Sign up"}
+          </button>
+        </div>
       </div>
     </div>
   );

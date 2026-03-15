@@ -2,6 +2,7 @@
 
 import { useAppContext } from "@/context";
 import { IconLogout, IconPencil, IconPlus } from "@tabler/icons-react";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -21,26 +22,27 @@ export const Navbar: React.FC = () => {
     <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto  py-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-2xl">
+                <Link href="/" className="flex items-center gap-2 font-bold text-2xl">
           <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-            <IconPencil size={18} className="text-white" />
+            <Pencil className="w-5 h-5 text-white" />
           </div>
-          <span className="text-sm sm:text-[1.3rem]">Draw App</span>
+          <span className="font-poppins">Canvas</span>
         </Link>
+
 
         {/* Right Section */}
         {!user && (
           <div className="flex items-center gap-3">
             <Link
               href="/signin"
-              className="px-6 py-2 rounded-full font-medium hover:bg-gray-900 hover:text-white transition"
+              className="px-6 py-2 bg-background text-foreground rounded-full text-sm hover:text-foreground  hover:bg-neutral-100 transition"
             >
               Signin
             </Link>
 
             <Link
               href="/signup"
-              className="px-6 py-2 bg-black text-white rounded-full font-medium hover:bg-gray-900 transition"
+              className="px-6 py-2 bg-foreground text-background rounded-full text-sm  hover:bg-neutral-800 transition"
             >
               Signup
             </Link>
