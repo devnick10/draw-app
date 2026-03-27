@@ -4,7 +4,7 @@ import { checkAuth } from "./lib/checkAuth";
 import { prisma, ShapeType } from "@repo/db";
 import { MessageSchema } from "./schema";
 const wss = new WebSocketServer({ port: 8080 });
-
+const BASE_URL = process.env.BASE_URL;
 interface User {
   userId: string;
   socket: WebSocket;
@@ -13,7 +13,7 @@ interface User {
 const room = new Map<string, User[]>();
 
 wss.on("connection", (ws, req) => {
-  const { searchParams } = new URL(req.url!, "http://localhost");
+  const { searchParams } = new URL(req.url!, BASE_URL);
   const token = searchParams.get("token") || "";
 
   const userId = checkAuth(token);
@@ -57,7 +57,7 @@ wss.on("connection", (ws, req) => {
         room
           .get(roomId)
           ?.filter((user) => user.socket !== ws && user.userId === userId) ||
-          [],
+        [],
       );
       return;
     }
