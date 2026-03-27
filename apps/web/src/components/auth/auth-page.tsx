@@ -125,6 +125,7 @@ export const AuthPage: React.FC<{ isSignin: boolean }> = ({ isSignin }) => {
           </Link>
 
           <button
+            disabled={loading}
             onClick={submitMap[mode]}
             className=" flex w-full max-w-sm items-center justify-center gap-2 px-8 py-2 mt-2 bg-black text-white rounded-md font-medium font-sans  hover:bg-gray-900 transition"
           >
