@@ -4,10 +4,11 @@ import { NextFunction, Request, Response, Router } from "express";
 import { authMidlleware } from "../middlewares/authMiddleware.js";
 import apiError from "http-errors";
 import { DeleteRoomSchema, GetShapeByRoomIdSchema } from "../schema.js";
+import { asyncHandler } from "../middlewares/asyncHandler.js";
 
 const roomRouter: Router = Router();
 
-roomRouter.post("/", authMidlleware, async (req: Request, res: Response, next: NextFunction) => {
+roomRouter.post("/", authMidlleware, asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   // @ts-ignore
   const userId = req.userId;
   const { data, success } = CreateRoomSchema.safeParse(req.body);
@@ -45,12 +46,12 @@ roomRouter.post("/", authMidlleware, async (req: Request, res: Response, next: N
   } catch (error) {
     console.log(error);
   }
-});
+}));
 
 roomRouter.get(
   "/shapes/:roomId",
   authMidlleware,
-  async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // @ts-ignore
     const userId = req.userId;
     const { success, data } = GetShapeByRoomIdSchema.safeParse(req.params);
@@ -76,13 +77,13 @@ roomRouter.get(
       message: "Shapes fetched.",
       shapes,
     });
-  },
+  }),
 );
 
 roomRouter.get(
   "/",
   authMidlleware,
-  async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // @ts-ignore
     const adminId = req.userId;
 
@@ -96,13 +97,13 @@ roomRouter.get(
       message: "Room fetched",
       rooms,
     });
-  },
+  }),
 );
 
 roomRouter.get(
   "/delete/:roomId",
   authMidlleware,
-  async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // @ts-ignore
     const adminId = req.userId;
     const { success, data } = DeleteRoomSchema.safeParse(req.params);
@@ -121,13 +122,13 @@ roomRouter.get(
     res.status(200).json({
       message: "Room deleted",
     });
-  },
+  },)
 );
 
 roomRouter.get(
   "/search",
   authMidlleware,
-  async (req: Request, res: Response, next: NextFunction) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     try {
       // @ts-ignore
       const adminId = req.userId;
@@ -156,6 +157,6 @@ roomRouter.get(
     } catch (err) {
       next(err);
     }
-  },
+  }),
 );
 export { roomRouter };

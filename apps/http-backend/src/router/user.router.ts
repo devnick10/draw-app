@@ -6,10 +6,11 @@ import { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import { authMidlleware } from "../middlewares/authMiddleware";
 import apiError from "http-errors";
+import { asyncHandler } from "../middlewares/asyncHandler";
 
 const userRouter: Router = Router();
 
-userRouter.post("/signin", async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post("/signin", asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { data, success } = SigninSchema.safeParse(req.body);
   if (!success) {
     return next(apiError(411, "Invalid inputs"));
@@ -41,9 +42,9 @@ userRouter.post("/signin", async (req: Request, res: Response, next: NextFunctio
       username: user.username
     }
   });
-});
+}));
 
-userRouter.post("/signup", async (req: Request, res: Response, next: NextFunction) => {
+userRouter.post("/signup", asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { data, success } = SignupSchema.safeParse(req.body);
   if (!success) {
     return next(apiError(400, "Invalid inputs"));
@@ -82,9 +83,9 @@ userRouter.post("/signup", async (req: Request, res: Response, next: NextFunctio
       username: newUser.username
     }
   });
-});
+}));
 
-userRouter.get("/me", authMidlleware, async (req: Request, res: Response, next: NextFunction) => {
+userRouter.get("/me", authMidlleware, asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   // @ts-ignore
   const userId = req.userId;
   const user = await prisma.user.findFirst({
@@ -102,6 +103,6 @@ userRouter.get("/me", authMidlleware, async (req: Request, res: Response, next: 
       emal: user.email,
     }
   });
-});
+}));
 
 export { userRouter };
