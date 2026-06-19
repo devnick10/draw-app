@@ -71,7 +71,7 @@ export async function searchRooms(query?: string) {
 }
 export async function deleteRoom(roomId: string) {
     try {
-        const res = await api.post(`/rooms/delete/${roomId}`);
+        const res = await api.get(`/rooms/delete/${roomId}`);
         return res.data;
     } catch (err: any) {
         const status = err.response?.status;
