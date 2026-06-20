@@ -50,10 +50,8 @@ roomRouter.post("/", authMidlleware, asyncHandler(async (req: Request, res: Resp
 
 roomRouter.get(
   "/shapes/:roomId",
-  authMidlleware,
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     // @ts-ignore
-    const userId = req.userId;
     const { success, data } = GetShapeByRoomIdSchema.safeParse(req.params);
     if (!success) {
       return next(apiError(409, "Invalid inputs"));
@@ -61,7 +59,6 @@ roomRouter.get(
 
     const shapes = await prisma.shape.findMany({
       where: {
-        userId,
         roomId: data.roomId,
       },
       orderBy: {
