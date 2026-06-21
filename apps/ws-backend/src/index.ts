@@ -3,19 +3,26 @@ import { WebSocketServer, type WebSocket } from "ws";
 import { checkAuth } from "./lib/checkAuth";
 import { prisma, ShapeType } from "@repo/db";
 import { MessageSchema } from "./schema";
-const wss = new WebSocketServer({ port: 8080 });
-const BASE_URL = process.env.BASE_URL;
+import { createServer } from "http"
+import { BASE_URL, PORT } from "./lib/config";
+
+const server = createServer((req, res) => {
+  res.writeHead(200);
+  res.end("WS Server Running");
+});
+
+const wss = new WebSocketServer({ server });
 interface User {
   userId: string;
   socket: WebSocket;
 }
 
-const room = new Map<string, User[]>();
+const room = new Map<string, User[]>()
 
 wss.on("connection", (ws, req) => {
   const { searchParams } = new URL(req.url!, BASE_URL);
   const token = searchParams.get("token") || "";
-
+  
   const userId = checkAuth(token);
   if (!userId) {
     ws.close(1008, "Unauthorized");
@@ -91,3 +98,7 @@ wss.on("connection", (ws, req) => {
     ws.send(data.toString());
   });
 });
+
+server.listen(PORT, () => {
+  console.log("WS SERVER IS UP")
+})
